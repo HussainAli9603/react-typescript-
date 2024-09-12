@@ -1,0 +1,25 @@
+npx create-react-app my-app-name --template typescript
+
+
+
+
+
+
+
+------------------------------------- Backend -----------------------------
+npm init -y
+npm install express
+npm install --save-dev typescript @types/node @types/express ts-node
+npm install --save-dev nodemon
+npm install bcrypt
+npm i --save-dev @types/bcrypt
+npm install jsonwebtoken @types/jsonwebtoken
+npm install body-parser
+
+npm install mongoose @types/mongoose
+
+npm install cookie-parser
+
+
+npx tsc --init
+mkdir src
