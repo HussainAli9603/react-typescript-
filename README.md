@@ -1,4 +1,4 @@
-# MERN Stack Project: Build and Deploy a Social Clone From Scratch | JWT, Socket.io
+# Full Stack Project- technical assessment
 
 ### Setup .env file
 
