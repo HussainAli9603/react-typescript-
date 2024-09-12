@@ -3,7 +3,7 @@ import { Box, Paper, Avatar, Typography, TextField, Button } from '@mui/material
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 // form inputs structure using TypeScript interfaces
 interface IFormInput {
@@ -30,11 +30,13 @@ const Login = () => {
     // QueryClient from react-query to invalidate or refetch data
     const queryClient = useQueryClient();
 
+    const navigate = useNavigate();
+
      // Mutation to handle form submission
    const { mutate, isError, error } = useMutation({
     mutationFn: async (formData: IFormInput) => {
       try {
-        const res = await fetch(" http://localhost:5000/api/v1/login", {
+        const res = await fetch("http://localhost:5000/api/v1/login", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -59,6 +61,8 @@ const Login = () => {
    // Form submit handler
    const onSubmit: SubmitHandler<IFormInput> = (data) => {
     mutate(data); // Pass the form data to mutate
+    console.log(data)
+    navigate(`/profile/${data.email}`);
   };
      
     
