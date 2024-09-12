@@ -46,6 +46,7 @@ const Login = () => {
 
         const data = await res.json();
         if (!res.ok) { throw new Error(data.error || "Something went wrong"); }
+        navigate(`/profile/${data?.user?.email}`);
         return data;
       } catch (error) {
         console.error("Error during sign In:", error);
@@ -61,13 +62,11 @@ const Login = () => {
    // Form submit handler
    const onSubmit: SubmitHandler<IFormInput> = (data) => {
     mutate(data); // Pass the form data to mutate
-    console.log(data)
-    navigate(`/profile/${data.email}`);
   };
      
     
     return (
-        <Box  onSubmit={handleSubmit(onSubmit)}>
+        <Box onSubmit={handleSubmit(onSubmit)}>
             <Paper elevation={20} style={paperStyle}>
                 <Box p={2} alignItems="center" >
                     <Avatar style={avatarStyle}>

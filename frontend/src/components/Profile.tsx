@@ -1,12 +1,19 @@
 import React, {useEffect} from 'react';
 import { Box, Typography, Avatar, Paper, Grid, Button } from '@mui/material';
-import { useParams } from "react-router-dom";
+import { useParams,useNavigate } from "react-router-dom";
 import { styled } from '@mui/material/styles';
 import { useQuery } from "@tanstack/react-query";
+import { useForm } from 'react-hook-form';
+
+// Define your form input interface
+interface IFormInput {
+  fullName: string;
+  username: string;
+  email: string;
+  phone: number;
+}
 
 const Profile: React.FC = () => {
-
-  // Styled components
 const ProfilePaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(3),
   textAlign: 'center',
@@ -20,6 +27,14 @@ const AvatarContainer = styled(Box)(({ theme }) => ({
 }));
 
 const { email } = useParams();
+
+const navigate = useNavigate();
+
+  const handleEditProfileClick = () => {
+    navigate(`/edit-profile/${email}`);
+  };
+
+  const { reset  } = useForm<IFormInput>();
   
   const {
     data: user,
@@ -35,7 +50,6 @@ const { email } = useParams();
         }
         return data;
       } catch (error) {
-        // Type assertion to handle 'unknown' type
         if (error instanceof Error) {
           throw new Error(error.message);
         }
@@ -68,28 +82,24 @@ const { email } = useParams();
           />
         </AvatarContainer>
         <Typography variant="h4" component="h1" gutterBottom>
-          {user.fullName}
+          {user?.fullName}
         </Typography>
         <Typography variant="body1" gutterBottom>
-          {user.username}
+          {user?.username}
         </Typography>
         <Typography variant="body2" color="textSecondary" gutterBottom>
-        {user.email}
+        {user?.email}
         </Typography>
         <Typography variant="body2" color="textSecondary">
-        {user.phone}
+        {user?.phone}
         </Typography>
         <Grid container spacing={2} justifyContent="center" sx={{ marginTop: 2 }}>
           <Grid item>
-            <Button variant="contained" color="primary">
+            <Button variant="contained" color="primary" onClick={handleEditProfileClick}>
               Edit Profile
             </Button>
           </Grid>
-          <Grid item>
-            <Button variant="outlined" color="secondary">
-              Logout
-            </Button>
-          </Grid>
+          
         </Grid>
       </ProfilePaper>
     </Box>

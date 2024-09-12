@@ -91,3 +91,27 @@ export const getUserProfile = async (req: Request, res: Response): Promise<Respo
   }
 };
 
+export const editUserProfile = async (req: Request, res: Response) => {
+	const { fullName, email, username, phone } = req.body;
+
+	const userEmail = req.params.email;
+  console.log(userEmail)
+
+	try {
+		let user = await User.findOne({ email:userEmail });
+		if (!user) return res.status(404).json({ message: "User not found" });
+
+		user.fullName = fullName || user.fullName;
+		user.username = username || user.username;
+		user.email = email || user.email;
+		user.phone = phone || user.phone;
+
+		user = await user.save();
+
+		return res.status(200).json(user);
+	} catch (error) {
+		console.log("Error in updateUser: ", error.message);
+		res.status(500).json({ error: error.message });
+	}
+};
+
