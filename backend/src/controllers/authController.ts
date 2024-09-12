@@ -5,53 +5,73 @@ import { generateTokenAndSetCookie } from "../utills/generateToken";
 
 // Register User
 export const register = async (req: Request, res: Response) => {
-  try{
-  const { fullName, username, email, phone, password, confirmPassword } = req.body;
-
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-		if (!emailRegex.test(email)) {
-			return res.status(400).json({ error: "Invalid email format" });
-		}
-
-    const existingEmail = await User.findOne({ email });
-		if (existingEmail) {
-			return res.status(400).json({ error: "Email is already taken" });
-		}
-
-  if (password.length < 6) {
-    return res.status(400).json({ error: "Password must be at least 6 characters long" });
-  }
-
-  if (isNaN(Number(phone))) {
-    return res.status(400).json({ error: "Phone number must be a valid number" });
-  }
-
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  const newUser = new User({
-    fullName: fullName,
-    username: username,
-    email: email,
-    phone:phone,
-    password: hashedPassword
-  });
-  console.log(newUser)
-
   try {
-    // Correct call with a single object parameter
-    generateTokenAndSetCookie({ userId: newUser.id.toString(), res });
+    const { fullName, username, email, phone, password, confirmPassword } = req.body;
 
-   await newUser.save();
+    if (!fullName || fullName.trim() === "") {
+      return res.status(400).json({ error: "Full Name is required" });
+    }
+    
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ error: "Invalid email format" });
+    }
+
+    // Check if email is already taken
+    const existingEmail = await User.findOne({ email });
+    console.log(email)
+    if (existingEmail) {
+      return res.status(400).json({ error: "Email is already taken" });
+    }
+
+    // Check if passwords match
+    if (password !== confirmPassword) {
+      return res.status(400).json({ error: "Passwords do not match" });
+    }
+
+    // Password length validation
+    if (password.length < 6) {
+      return res.status(400).json({ error: "Password must be at least 6 characters long" });
+    }
+
+    // Phone validation
+    if (isNaN(Number(phone))) {
+      return res.status(400).json({ error: "Phone number must be a valid number" });
+    }
+
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create new user
+    const newUser = {
+      fullName,
+      username,
+      email,
+      phone,
+      password: hashedPassword
+    };
+
+    // Save the new user
+    const createdUser = await User.create(newUser);
+
+    // Generate token and set cookie
+    generateTokenAndSetCookie({ userId: createdUser.id.toString(), res });
+
+    // Send success response
     res.status(201).json({ message: 'User registered successfully' });
 
-  } catch(e) {
-    console.log((e as Error).message)
+  } catch (error: any) {
+    // Handle duplicate key error (MongoDB error code 11000)
+    if (error.code === 11000) {
+      const field = Object.keys(error.keyValue)[0];
+      return res.status(400).json({ error: `${field.charAt(0).toUpperCase() + field.slice(1)} is already taken` });
+    }
+    console.log(error.message);
+    res.status(500).json({ error: "Internal Server Error" });
   }
-}catch (error) {
-  
-  res.status(500).json({ error: "Internal Server Error" });
- }
 };
+
 
 // Login User
 export const login = async (req: Request, res: Response) => {

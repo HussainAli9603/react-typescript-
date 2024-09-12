@@ -15,19 +15,11 @@ interface IFormInput {
 const Login = () => {
     const paperStyle = { padding: '30px 20px', width: 300, margin: "20px auto" }
     const headerStyle = { margin: 0 }
-    const avatarStyle = { backgroundColor: '#1bbd7e', width: 60, height: 60, }
-
-    const [formData, setFormData] = useState<IFormInput>({
-        email: "",
-        password: "",
-      });
-
     
     const { register, handleSubmit,watch, formState: { errors } } = useForm<IFormInput>();
 
     const password = watch("password");
 
-    // QueryClient from react-query to invalidate or refetch data
     const queryClient = useQueryClient();
 
     const navigate = useNavigate();
@@ -54,14 +46,13 @@ const Login = () => {
       }
     },
     onSuccess: () => {
-      // Invalidate or refetch query to update the user state
       queryClient.invalidateQueries({ queryKey: ["authUser"] });
     },
   });
  
    // Form submit handler
    const onSubmit: SubmitHandler<IFormInput> = (data) => {
-    mutate(data); // Pass the form data to mutate
+    mutate(data);
   };
      
     
@@ -69,11 +60,8 @@ const Login = () => {
         <Box onSubmit={handleSubmit(onSubmit)}>
             <Paper elevation={20} style={paperStyle}>
                 <Box p={2} alignItems="center" >
-                    <Avatar style={avatarStyle}>
-                        <AddCircleOutlineOutlinedIcon />
-                    </Avatar>
                     <h2 style={headerStyle}>Sign In</h2>
-                    <Typography variant='caption' gutterBottom>Please fill this form to create an account !</Typography>
+                    <Typography variant='caption' gutterBottom>Please fill this form to Login an account !</Typography>
                 </Box>
                 <form>
                     

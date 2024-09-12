@@ -18,7 +18,6 @@ interface IFormInput {
 const RegisterPage = () => {
     const paperStyle = { padding: '30px 20px', width: 300, margin: "20px auto" }
     const headerStyle = { margin: 0 }
-    const avatarStyle = { backgroundColor: '#1bbd7e', width: 60, height: 60, }
 
     const [formData, setFormData] = useState<IFormInput>({
       fullName: "",
@@ -29,18 +28,14 @@ const RegisterPage = () => {
       confirmPassword: ""
     });
 
-    // React Hook Form hooks
   const { register, handleSubmit, watch, formState: { errors } } = useForm<IFormInput>();
 
-  // Watch password field for validation
   const password = watch("password");
 
-  // QueryClient from react-query to invalidate or refetch data
   const queryClient = useQueryClient();
 
   const navigate = useNavigate();
 
-   // Mutation to handle form submission
    const { mutate, isError, error } = useMutation({
     mutationFn: async (formData: IFormInput) => {
       try {
@@ -61,7 +56,6 @@ const RegisterPage = () => {
       }
     },
     onSuccess: () => {
-      // Invalidate or refetch query to update the user state
       queryClient.invalidateQueries({ queryKey: ["authUser"] });
 
       navigate("/login");
@@ -70,16 +64,14 @@ const RegisterPage = () => {
  
    // Form submit handler
    const onSubmit: SubmitHandler<IFormInput> = (data) => {
-    mutate(data); // Pass the form data to mutate
+    mutate(data);
   };
     
     return (
         <Box  onSubmit={handleSubmit(onSubmit)}>
             <Paper elevation={20} style={paperStyle}>
                 <Box p={2} alignItems="center" >
-                    <Avatar style={avatarStyle}>
-                        <AddCircleOutlineOutlinedIcon />
-                    </Avatar>
+
                     <h2 style={headerStyle}>Sign In</h2>
                     <Typography variant='caption' gutterBottom>Please fill this form to create an account !</Typography>
                     {isError && <p className='text-red-500'>{error.message}</p>}

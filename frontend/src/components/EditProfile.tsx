@@ -1,9 +1,9 @@
-import React,{useState, useEffect} from 'react'
+import React,{ useEffect} from 'react'
 import { Box, Paper, Avatar, Typography, TextField, Button } from '@mui/material';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Link, useNavigate, useParams  } from 'react-router-dom'
+import {useNavigate, useParams  } from 'react-router-dom'
 
 // Define your form input interface
 interface IFormInput {
@@ -42,7 +42,6 @@ const EditProfilePage = () => {
         }
         return data;
       } catch (error) {
-        // Type assertion to handle 'unknown' type
         if (error instanceof Error) {
           throw new Error(error.message);
         }
@@ -86,14 +85,13 @@ useEffect(() => {
       }
     },
     onSuccess: () => {
-      // Invalidate or refetch query to update the user state
       queryClient.invalidateQueries({ queryKey: ["authUser"] });
     },
   });
  
    // Form submit handler
    const onSubmit: SubmitHandler<IFormInput> = (data) => {
-    mutate(data); // Pass the form data to mutate
+    mutate(data);
     navigate(`/profile/${data.email}`);
   };
     
@@ -106,7 +104,7 @@ useEffect(() => {
                     </Avatar>
                     <h2 style={headerStyle}>Edit Profile</h2>
                     <Typography variant='caption' gutterBottom>Please fill this form to Edit an account !</Typography>
-                    {/* {isError && <p className='text-red-500'>{error.message}</p>} */}
+                    {isError && <p className='text-red-500'>{error.message}</p>}
                 </Box>
                 <form>
                     <TextField fullWidth 

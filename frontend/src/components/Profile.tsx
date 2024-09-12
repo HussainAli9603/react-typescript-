@@ -26,9 +26,9 @@ const AvatarContainer = styled(Box)(({ theme }) => ({
   marginBottom: theme.spacing(2),
 }));
 
-const { email } = useParams();
+  const { email } = useParams();
 
-const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const handleEditProfileClick = () => {
     navigate(`/edit-profile/${email}`);
